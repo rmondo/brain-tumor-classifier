@@ -1,0 +1,82 @@
+# =========================================================
+# Normalize text files
+# =========================================================
+* text=auto eol=lf
+
+# =========================================================
+# Source code
+# =========================================================
+*.py      text eol=lf
+*.ipynb   text eol=lf
+*.md      text eol=lf
+*.txt     text eol=lf
+*.rst     text eol=lf
+*.toml    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.json    text eol=lf
+*.csv     text eol=lf
+*.tsv     text eol=lf
+*.sh      text eol=lf
+*.bash    text eol=lf
+*.zsh     text eol=lf
+*.html    text eol=lf
+*.css     text eol=lf
+*.js      text eol=lf
+*.ts      text eol=lf
+*.tsx     text eol=lf
+*.jsx     text eol=lf
+*.xml     text eol=lf
+*.ini     text eol=lf
+*.cfg     text eol=lf
+*.conf    text eol=lf
+*.sql     text eol=lf
+
+# Windows scripts keep CRLF when needed
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+*.ps1     text eol=crlf
+
+# =========================================================
+# Binary files
+# =========================================================
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.bmp     binary
+*.tif     binary
+*.tiff    binary
+*.ico     binary
+*.pdf     binary
+*.zip     binary
+*.tar     binary
+*.gz      binary
+*.bz2     binary
+*.7z      binary
+*.rar     binary
+*.pth     binary
+*.pt      binary
+*.ckpt    binary
+*.onnx    binary
+*.h5      binary
+*.keras   binary
+*.tflite  binary
+*.pb      binary
+*.pkl     binary
+*.joblib  binary
+*.npy     binary
+*.npz     binary
+
+# =========================================================
+# Jupyter notebooks - treat as text for diff/merge
+# =========================================================
+*.ipynb text
+
+# =========================================================
+# Optional: mark generated artifacts as vendored
+# =========================================================
+reports/** linguist-vendored
+runs/** linguist-vendored
+artifacts/** linguist-vendored
+outputs/** linguist-vendored

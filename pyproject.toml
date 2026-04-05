@@ -1,0 +1,117 @@
+# pyproject.toml
+# ──────────────
+# Modern PEP 517/518 build configuration — preferred by pip >= 21.3.
+# Both pyproject.toml and setup.py are provided; pip uses this file first.
+#
+# FILE PLACEMENT — per ARCHITECTURE.md
+# ──────────────────────────────────────
+# The brain_tumor/ package lives inside notebooks/, NOT at the project root.
+# Both this file and setup.py must sit at the project root:
+#
+#     brain-tumor-classifier/          ← run `pip install -e .` HERE
+#     ├── pyproject.toml               ← this file
+#     ├── setup.py                     ← legacy fallback
+#     ├── notebooks/
+#     │   ├── brain_tumor/             ← importable package
+#     │   │   ├── __init__.py
+#     │   │   ├── config.py
+#     │   │   ├── data/
+#     │   │   ├── models/
+#     │   │   ├── training/
+#     │   │   └── evaluation/
+#     │   └── brain_tumor_classifier_ref.ipynb
+#     ├── src/
+#     │   └── app/
+#     ├── data/
+#     ├── models/
+#     ├── reports/
+#     └── requirements.txt
+#
+# USAGE
+# ─────
+#   pip install -e .                    # editable, core deps only
+#   pip install -e ".[dev]"             # + pytest + pytest-cov
+#   pip install -e ".[notebook]"        # + jupyter, kaggle, ipywidgets
+#   pip install -e ".[dev,notebook]"    # full development environment
+
+[build-system]
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name            = "brain-tumor-classifier"
+version         = "1.0.0"
+description     = "EfficientNetB0-based Brain Tumor MRI Classifier — PyTorch"
+readme          = "README.md"
+requires-python = ">=3.10"
+license         = { text = "MIT" }
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+dependencies = [
+    # ── Deep learning ────────────────────────────────────────────────────
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
+    "efficientnet-pytorch>=0.7.1",
+    # ── Experiment tracking ──────────────────────────────────────────────
+    "tensorboard==2.16.2; python_version < '3.13'",
+    "tensorboard>=2.20.0; python_version >= '3.13'",
+    # ── Data / compute ───────────────────────────────────────────────────
+    "numpy==1.26.4; python_version < '3.13'",
+    "numpy>=2.1.0; python_version >= '3.13'",
+    "pandas==2.2.2; python_version < '3.13'",
+    "pandas>=2.3.0; python_version >= '3.13'",
+    "scikit-learn==1.4.2; python_version < '3.13'",
+    "scikit-learn>=1.7.0; python_version >= '3.13'",
+    "opencv-python>=4.8.0",
+    "Pillow==10.3.0; python_version < '3.13'",
+    "Pillow>=11.0.0; python_version >= '3.13'",
+    # ── Visualisation ────────────────────────────────────────────────────
+    "matplotlib==3.9.0; python_version < '3.13'",
+    "matplotlib>=3.9.2; python_version >= '3.13'",
+    "seaborn>=0.12.0",
+    # ── Progress bars ────────────────────────────────────────────────────
+    "tqdm>=4.66.0",
+    # ── Flask inference server ───────────────────────────────────────────
+    "flask>=3.0.0",
+    "flask-cors>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
+notebook = [
+    "jupyterlab>=4.0.0",
+    "ipywidgets>=8.0.0",
+    "kaggle>=1.6.0",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+brain-tumor-train = "brain_tumor.train:main"
+
+# ── Package discovery ─────────────────────────────────────────────────────────
+# brain_tumor/ lives inside notebooks/, not at the project root.
+# `where` tells setuptools to scan notebooks/ instead of "." so it finds
+# brain_tumor/ and all its sub-packages (data, models, training, evaluation).
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["brain_tumor", "brain_tumor.*"]
+exclude = ["tests", "tests.*"]
+
+# ── Pytest configuration ──────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths      = ["tests"]
+addopts        = "-v --tb=short --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+]

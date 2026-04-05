@@ -6,20 +6,25 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Deep Learning ─────────────────────────────────────────────────────────────
-tensorflow==2.16.1                  # Core framework (CPU + GPU via pip)
+#tensorflow==2.16.1                  # Core framework (CPU + GPU via pip)
 keras==3.3.3                        # High-level API (bundled with TF 2.16+)
 
 # ── Computer Vision ───────────────────────────────────────────────────────────
 opencv-python-headless==4.9.0.80    # Grad-CAM heatmap blending (no GUI deps)
-Pillow==10.3.0                      # Image loading / saving
+Pillow==10.3.0; python_version < "3.13"   # Stable pin for Python <=3.12
+Pillow>=11.0.0; python_version >= "3.13"  # Use wheels available for Python 3.13+
 
 # ── Data Science ──────────────────────────────────────────────────────────────
-numpy==1.26.4                       # Array ops (TF 2.16 requires <2.0)
-pandas==2.2.2                       # Tabular data, metrics export
-scikit-learn==1.4.2                 # train_test_split, class_weight, metrics
+numpy==1.26.4; python_version < "3.13"   # TF 2.16-compatible pin for Python <=3.12
+numpy>=2.1.0; python_version >= "3.13"   # Python 3.13-compatible NumPy wheels
+pandas==2.2.2; python_version < "3.13"     # Stable pin for Python <=3.12
+pandas>=2.3.0; python_version >= "3.13"    # Use wheels available for Python 3.13+
+scikit-learn==1.4.2; python_version < "3.13"  # Stable pin for Python <=3.12
+scikit-learn>=1.7.0; python_version >= "3.13" # Python 3.13+ compatible wheel builds
 
 # ── Visualisation ─────────────────────────────────────────────────────────────
-matplotlib==3.9.0                   # Training curves, ROC plots
+matplotlib==3.9.0; python_version < "3.13"   # Stable pin for Python <=3.12
+matplotlib>=3.9.2; python_version >= "3.13"  # Python 3.13+ compatible wheel builds
 seaborn==0.13.2                     # Confusion matrix heatmaps
 
 # ── Jupyter ───────────────────────────────────────────────────────────────────
@@ -32,8 +37,10 @@ nbformat==5.10.4                    # Notebook file format
 nbconvert==7.16.4                   # Export notebooks to HTML / PDF / script
 
 # ── TensorBoard ───────────────────────────────────────────────────────────────
-tensorboard==2.16.2                 # Training visualisation
-tensorboard-data-server==0.7.2      # Fast data loading backend
+tensorboard==2.16.2; python_version < "3.13"      # Stable pin for Python <=3.12
+tensorboard>=2.20.0; python_version >= "3.13"     # NumPy 2.x compatible on Python 3.13+
+tensorboard-data-server==0.7.2; python_version < "3.13"
+tensorboard-data-server>=0.7.2; python_version >= "3.13"
 
 # ── Flask Web App ─────────────────────────────────────────────────────────────
 flask==3.0.3                        # Web framework

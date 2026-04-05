@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Brain Tumor MRI Classifier</title>
+  <style>
+    body { font-family: system-ui; max-width: 700px; margin: 40px auto; padding: 20px; background: #f9f9f9; }
+    h1 { color: #1a1a2e; margin-bottom: 10px; }
+    .info { color: #666; font-size: 14px; margin-bottom: 20px; }
+    .upload-area { border: 2px dashed #999; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; background: #fff; transition: all .2s; }
+    .upload-area:hover { border-color: #4363d8; background: #f0f4ff; }
+    .upload-area.active { border-color: #4363d8; background: #e8eeff; }
+    .result { margin-top: 24px; background: #fff; border-radius: 12px; padding: 20px; display: none; }
+    .bar-wrap { margin: 8px 0; }
+    .bar-label { font-size: 13px; margin-bottom: 4px; color: #333; }
+    .bar { height: 20px; border-radius: 4px; min-width: 2px; transition: width .3s; background: #4363d8; }
+    .pred { font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 12px 0; }
+    img#preview { max-width: 250px; border-radius: 8px; margin: 16px 0; border: 1px solid #ddd; }
+    button { background: #4363d8; color: #fff; border: none; border-radius: 8px; padding: 12px 32px; font-size: 16px; cursor: pointer; margin-top: 12px; transition: background .2s; }
+    button:hover { background: #2a4bc4; }
+    .error { color: #d32f2f; background: #ffebee; padding: 12px; border-radius: 8px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>🧠 Brain Tumor MRI Classifier</h1>
+  <p class="info">Select an MRI image to classify as:
+    <strong>glioma</strong>, <strong>meningioma</strong>,
+    <strong>pituitary</strong>, or <strong>no tumor</strong>
+  </p>
+
+  <div class="upload-area" id="uploadArea"
+       onmouseover="this.classList.add('active')"
+       onmouseout="this.classList.remove('active')"
+       onclick="document.getElementById('fileInput').click()">
+    <p style="margin: 0; font-size: 18px;">📁</p>
+    <p>Click to select MRI image</p>
+    <p style="color: #999; font-size: 12px;">(JPG, PNG)</p>
+    <input type="file" id="fileInput" accept="image/*" hidden onchange="handleFile(this)">
+  </div>
+
+  <div class="result" id="result">
+    <img id="preview" src="" alt="MRI">
+    <div class="pred" id="predLabel"></div>
+    <div id="bars"></div>
+  </div>
+
+  <div id="errorDiv"></div>
+
+  <script>
+    const COLORS = {
+      glioma: "#e6194b", meningioma: "#3cb44b",
+      pituitary: "#4363d8", notumor: "#f58231"
+    };
+
+    function showError(msg) {
+      document.getElementById("errorDiv").innerHTML =
+        '<div class="error">❌ Error: ' + msg + '</div>';
+      document.getElementById("result").style.display = "none";
+    }
+
+    async function handleFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const fd = new FormData();
+      fd.append("file", file);
+
+      try {
+        const res  = await fetch("/predict", { method: "POST", body: fd });
+        const text = await res.text();
+        let data;
+
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          showError("Server error: non-JSON response — " + text.substring(0, 100));
+          return;
+        }
+
+        if (!res.ok) {
+          showError(data.error || ("Server error (HTTP " + res.status + ")"));
+          return;
+        }
+
+        document.getElementById("errorDiv").innerHTML = "";
+        document.getElementById("preview").src = URL.createObjectURL(file);
+        document.getElementById("predLabel").textContent =
+          data.predicted_class.toUpperCase() +
+          " (" + (data.confidence * 100).toFixed(1) + "%)";
+
+        const barsDiv = document.getElementById("bars");
+        barsDiv.innerHTML = "";
+        Object.entries(data.all_probabilities || {})
+          .sort((a, b) => b[1] - a[1])
+          .forEach(([cls, p]) => {
+            const color = COLORS[cls] || "#888";
+            const pct   = (p * 100).toFixed(1);
+            barsDiv.innerHTML +=
+              '<div class="bar-wrap">' +
+                '<div class="bar-label">' + cls + ': ' + pct + '%</div>' +
+                '<div class="bar" style="width:' + pct + '%;background:' + color + '"></div>' +
+              '</div>';
+          });
+
+        document.getElementById("result").style.display = "block";
+
+      } catch (err) {
+        showError("Network error: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

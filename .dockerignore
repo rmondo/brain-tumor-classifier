@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .dockerignore — keeps the build context lean and the runtime image clean
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Python artefacts
+__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Test & coverage artefacts (excluded from runtime stage)
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# Jupyter notebooks (not needed at runtime)
+*.ipynb
+.ipynb_checkpoints/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Docs
+docs/
+*.md
+*.txt
+!requirements.txt
+
+# CI
+.github/
+.circleci/
+
+# Any locally downloaded or cached model files that should come
+# from models/download_weights.py at build time instead
+models/*.pth
+models/*.pt
+models/*.bin
+!models/download_weights.py
