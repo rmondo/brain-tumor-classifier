@@ -8,48 +8,37 @@
 ## Repository Structure
 
 ```
-brain-tumor-classifier/                  # pip install -e . runs here
-├── pyproject.toml                       # NEW (preferred by pip >= 21.3)
-├── setup.py                             # UPDATED (legacy fallback)
-├── notebooks
-│   ├── brain_tumor_classifier_ref.ipynb # Orchestration (refactored) notebook — imports only, no inline logic
-│   ├── brain_tumor_classifier.ipynb     # VS Code version
-│   ├── brain_tumor_classifier_tut.ipynb # VS Code/TensorBoard tutorial version 
-│   └── brain_tumor/                     # Importable Python package (all logic lives here)
-│       ├── __init__.py
-│       ├── config.py                    # Single source of truth — every constant, path & flag
-│       ├── data/
-│       │   ├── __init__.py
-│       │   └── dataset.py               # BrainTumorDataset · transforms · build_dataloaders · download_dataset
-│       │
-│       ├── models/
-│       │   ├── __init__.py
-│       │   ├── classifier.py            # BrainTumorClassifier (EfficientNetB0 + custom head)
-│       │   └── checkpoint.py            # save_model · load_model · save_metrics
-│       │
-│       ├── training/
-│       │   ├── __init__.py
-│       │   ├── engine.py                # train_epoch · eval_epoch · run_stage (AMP + early stop)
-│       │   └── tensorboard.py           # setup_writer · launch_tensorboard
-│       │
-│       └── evaluation/
-│           ├── __init__.py
-│           ├── metrics.py               # compute_class_weights · get_predictions · build_error_dataframe
-│           ├── plots.py                 # plot_history · plot_confusion_matrix · plot_roc_curves · plot_misclassified
-│           └── gradcam.py               # GradCAM class · display_gradcam
+brain-tumor-classifier/                 ← pip install -e . runs here
+├── pyproject.toml                      ← NEW (preferred by pip >= 21.3)
+├── setup.py                            ← UPDATED (legacy fallback)
+├── brain_tumor/                         # Importable package — all logic lives here
+│   ├── __init__.py
+│   ├── config.py                        # Every constant, path & flag
+│   ├── data/
+│   │   └── dataset.py                   # BrainTumorDataset · transforms · build_dataloaders · download_dataset
+│   ├── models/
+│   │   ├── classifier.py                # BrainTumorClassifier (EfficientNetB0 + custom head)
+│   │   └── checkpoint.py                # save_model · load_model · save_metrics
+│   ├── training/
+│   │   ├── engine.py                    # train_epoch · eval_epoch · run_stage (AMP + early stop)
+│   │   └── tensorboard.py               # setup_writer · launch_tensorboard
+│   └── evaluation/
+│       ├── metrics.py                   # compute_class_weights · get_predictions · build_error_dataframe
+│       ├── plots.py                     # All matplotlib / seaborn visualisations
+│       └── gradcam.py                   # GradCAM class · display_gradcam
 │
 ├── src/
 │   └── app/                             # Flask inference server
-│       ├── app.py                       # Routes: GET / · POST /predict · GET /health
+│       ├── app.py                       # GET / · POST /predict · GET /health
 │       └── templates/
 │           └── index.html               # Drag-and-drop upload UI + confidence bars
 │
-├── brain_tumor_classifier_ref.ipynb     # Orchestration (refactored) notebook — imports only, no inline logic
+├── brain_tumor_classifier_ref_2.ipynb   # Orchestration notebook — imports only, no inline logic
 │
 ├── models/                              # Saved weights (gitignored except final)
-│   ├── best_stage1.pth                  # Best checkpoint from Stage 1
-│   ├── best_stage2.pth                  # Best checkpoint from Stage 2
-│   └── brain_tumor_efficientnetb0_final.pth   # Final export with full metadata
+│   ├── best_stage1.pth
+│   ├── best_stage2.pth
+│   └── brain_tumor_efficientnetb0_final.pth
 │
 ├── reports/                             # Auto-generated evaluation artefacts
 │   ├── sample_augmented.png
@@ -60,24 +49,16 @@ brain-tumor-classifier/                  # pip install -e . runs here
 │   ├── misclassified_panel.png
 │   └── metrics_summary.json
 │
-├── runs/                                # TensorBoard event files (gitignored)
-│   └── brain_tumor/
+├── runs/brain_tumor/                    # TensorBoard event files (gitignored)
+├── logs/flask_server.log                # Flask server log (gitignored)
+├── data/brain_tumor_mri/                # Kaggle dataset (gitignored)
 │
-├── logs/                                # Flask server log (gitignored)
-│   └── flask_server.log
-│
-├── data/                                # Kaggle dataset download (gitignored)
-│   └── brain_tumor_mri/
-│       ├── Training/
-│       │   ├── glioma/
-│       │   ├── meningioma/
-│       │   ├── pituitary/
-│       │   └── notumor/
-│       └── Testing/
-│           └── (same structure)
-│
+├── setup.py                             # pip install -e . makes brain_tumor importable
+├── run.py                               # Entry point for Flask application — bridge between model & Flask web service 
 ├── requirements.txt
-├── setup.py                             # `pip install -e .` makes brain_tumor importable
+├── fix_install.sh                       # purge project artifacts for clean restart bash script
+├── tb.sh                                # tensorBoard execution launch bash script
+├── brain_tumor -> ./notebooks/brain_tumor # softlink to expose ./notebooks/brain_tumor folder to top level directory 
 └── README.md
 ```
 
@@ -235,7 +216,7 @@ brain-tumor-classifier/                  # pip install -e . runs here
 
 ## Notebook as Orchestration Layer
 
-The notebook (`brain_tumor_classifier.ipynb`) contains **no function definitions**.  
+The orchestrated notebook (`brain_tumor_classifier_ref_2.ipynb`) contains **no function definitions**.  
 Every cell is 5–15 lines of imports and calls into the `brain_tumor` package.
 
 | Section | Package call(s) |
