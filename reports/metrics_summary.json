@@ -1,0 +1,11 @@
+{
+  "macro_auc": 0.98146875,
+  "roc_per_class": {
+    "glioma": 0.9500770833333333,
+    "meningioma": 0.9810375000000001,
+    "pituitary": 0.99838125,
+    "notumor": 0.9963791666666667
+  },
+  "total_test": 1600,
+  "misclassified": 143
+}
