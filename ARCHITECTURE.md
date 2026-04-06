@@ -58,7 +58,6 @@ brain-tumor-classifier/                 ← pip install -e . runs here
 ├── requirements.txt
 ├── fix_install.sh                       # purge project artifacts for clean restart bash script
 ├── tb.sh                                # tensorBoard execution launch bash script
-├── brain_tumor -> ./notebooks/brain_tumor # softlink to expose ./notebooks/brain_tumor folder to top level directory 
 └── README.md
 ```
 
