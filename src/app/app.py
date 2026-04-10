@@ -30,6 +30,7 @@ import torchvision.transforms as T
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from PIL import Image
+from werkzeug.exceptions import HTTPException
 
 # Allow `from brain_tumor import …` when running from the project root
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -62,6 +63,12 @@ print(f"[INIT] Model exists: {MODEL_PATH.exists()}", flush=True)
 
 @app.errorhandler(Exception)
 def _handle_error(error):
+    if isinstance(error, HTTPException):
+        return jsonify({
+            "error": error.description,
+            "type": type(error).__name__,
+        }), error.code
+
     traceback.print_exc()
     return jsonify({
         "error"    : str(error),
@@ -129,8 +136,14 @@ def health():
     return jsonify({"status": "ok", "device": str(DEVICE)})
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
+    if request.method == "GET":
+        return jsonify({
+            "message": "Use POST /predict with multipart/form-data field 'file' containing an MRI image.",
+            "example": "curl -X POST http://localhost:5050/predict -F \"file=@path/to/image.jpg\"",
+        }), 200
+
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded. Send 'file' in multipart/form-data"}), 400
     file = request.files["file"]
