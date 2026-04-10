@@ -75,17 +75,17 @@ ENV/
 # Logs
 # =========================================================
 *.log
-logs/
+#logs/
 
 # =========================================================
 # ML / DL artifacts
 # =========================================================
 
 # Model checkpoints and weights
-models/
-checkpoints/
-weights/
-*.pth
+#models/
+#checkpoints/
+#weights/
+#*.pth
 *.pt
 *.ckpt
 *.onnx
@@ -99,25 +99,25 @@ runs/
 events.out.tfevents.*
 
 # Reports / generated outputs
-reports/
-artifacts/
-outputs/
+#reports/
+#artifacts/
+#outputs/
 
 # Generated images / plots / exported eval files
-*.png
-*.jpg
-*.jpeg
-*.pdf
-*.csv
-*.tsv
-*.parquet
-*.feather
+#*.png
+#*.jpg
+#*.jpeg
+#*.pdf
+#*.csv
+#*.tsv
+#*.parquet
+#*.feather
 
 # =========================================================
 # Datasets / secrets
 # =========================================================
-data/
-datasets/
+#data/
+#datasets/
 *.zip
 *.tar
 *.tar.gz
