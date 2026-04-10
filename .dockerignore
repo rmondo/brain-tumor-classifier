@@ -46,6 +46,7 @@ docs/
 *.md
 *.txt
 !requirements.txt
+!README.md
 
 # CI
 .github/
@@ -56,4 +57,5 @@ docs/
 models/*.pth
 models/*.pt
 models/*.bin
+!models/brain_tumor_efficientnetb0_final.pth
 !models/download_weights.py
